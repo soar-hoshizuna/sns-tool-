@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>澪花 腹部コース SNS投稿ジェネレーター</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --purple:#534AB7;
+  --purple-light:#EEEDFE;
+  --purple-mid:#AFA9EC;
+  --purple-dark:#3C3489;
+  --text:#1a1a1a;
+  --text-sub:#555;
+  --text-hint:#999;
+  --bg:#fff;
+  --bg-s:#f7f6f3;
+  --border:#e0dedb;
+  --radius:10px;
+  --radius-lg:14px;
+  --green-bg:#E1F5EE;
+  --green-text:#085041;
+  --red-bg:#FCEBEB;
+  --red-text:#A32D2D;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;background:var(--bg-s);color:var(--text);min-height:100vh;}
+
+/* ===== LOGIN ===== */
+.login-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;}
+.login-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px 24px;width:100%;max-width:380px;}
+.login-logo{text-align:center;margin-bottom:24px;}
+.login-logo-title{font-size:18px;font-weight:600;letter-spacing:0.12em;color:var(--purple-dark);}
+.login-logo-sub{font-size:11px;color:var(--text-hint);margin-top:6px;letter-spacing:0.04em;}
+.form-label{font-size:12px;color:var(--text-sub);margin-bottom:6px;display:block;}
+input[type=email],input[type=text]{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:14px;color:var(--text);background:var(--bg);margin-bottom:14px;font-family:inherit;}
+input:focus{outline:none;border-color:var(--purple-mid);}
+.login-btn{width:100%;padding:13px;background:var(--purple);border:none;border-radius:var(--radius);color:#fff;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:0.04em;}
+.login-btn:active{opacity:.8;}
+.login-btn:disabled{opacity:.5;cursor:default;}
+.step-note{font-size:12px;color:var(--text-hint);text-align:center;margin-top:12px;line-height:1.6;}
+.msg-box{padding:10px 12px;border-radius:var(--radius);font-size:13px;margin-bottom:14px;line-height:1.5;}
+.msg-ok{background:var(--green-bg);color:var(--green-text);}
+.msg-err{background:var(--red-bg);color:var(--red-text);}
+
+/* ===== MAIN APP ===== */
+.app-wrap{display:none;}
+.header{background:var(--bg);border-bottom:1px solid var(--border);padding:14px 16px;}
+.header-inner{max-width:480px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;}
+.header-title{font-size:15px;font-weight:600;letter-spacing:0.08em;color:var(--purple-dark);}
+.header-user{font-size:11px;color:var(--text-hint);}
+.logout-btn{font-size:11px;color:var(--text-hint);background:none;border:none;cursor:pointer;text-decoration:underline;}
+.main{padding:16px;max-width:480px;margin:0 auto;}
+.section{margin-bottom:20px;}
+.label{font-size:11px;color:var(--text-hint);letter-spacing:0.06em;margin-bottom:8px;}
+.chip-row{display:flex;gap:6px;flex-wrap:wrap;}
+.chip{padding:8px 16px;border:1px solid var(--border);border-radius:20px;font-size:13px;background:var(--bg);color:var(--text-sub);cursor:pointer;transition:all .15s;white-space:nowrap;-webkit-tap-highlight-color:transparent;}
+.chip.active{background:var(--purple);border-color:var(--purple);color:#fff;font-weight:500;}
+.purpose-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.pcard{padding:12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;}
+.pcard.active{border-color:var(--purple-mid);background:var(--purple-light);}
+.pcard-icon{font-size:18px;margin-bottom:5px;}
+.pcard-title{font-size:13px;font-weight:600;color:var(--text);}
+.pcard.active .pcard-title{color:var(--purple-dark);}
+.pcard-sub{font-size:11px;color:var(--text-hint);margin-top:2px;line-height:1.4;}
+select,textarea{width:100%;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);font-size:13px;color:var(--text);font-family:inherit;}
+select{padding:11px 36px 11px 12px;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+textarea{padding:12px;resize:none;line-height:1.7;}
+select:focus,textarea:focus{outline:none;border-color:var(--purple-mid);}
+.hint-text{font-size:11px;color:var(--text-hint);margin-top:6px;line-height:1.6;}
+.gen-btn{width:100%;padding:15px;background:var(--purple);border:none;border-radius:var(--radius);color:#fff;font-size:15px;font-weight:600;cursor:pointer;letter-spacing:0.04em;}
+.gen-btn:active{opacity:.8;}
+.divider{height:1px;background:var(--border);margin:24px 0;}
+.out-section{display:none;}
+.out-section.visible{display:block;}
+.badge-row{margin-bottom:14px;display:flex;gap:6px;flex-wrap:wrap;}
+.badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:500;}
+.out-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px;}
+.out-label{font-size:10px;color:var(--text-hint);letter-spacing:0.08em;margin-bottom:10px;}
+.out-text{font-size:14px;color:var(--text);line-height:1.95;white-space:pre-wrap;}
+.caption-card{border-color:var(--purple-mid);border-width:1.5px;}
+.copy-btn{display:block;width:100%;margin-top:12px;padding:10px;border:1px solid var(--purple-mid);border-radius:var(--radius);background:var(--purple-light);color:var(--purple-dark);font-size:13px;font-weight:500;cursor:pointer;text-align:center;}
+.copy-ok{background:var(--green-bg);border-color:#5DCAA5;color:var(--green-text);}
+.action-row{display:flex;gap:8px;margin-top:4px;margin-bottom:20px;}
+.action-btn{flex:1;padding:12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-s);color:var(--text-sub);font-size:13px;cursor:pointer;text-align:center;}
+.save-btn{background:var(--purple-light);border-color:var(--purple-mid);color:var(--purple-dark);font-weight:500;}
+.save-btn:disabled{opacity:.5;cursor:default;}
+.save-note{font-size:11px;color:var(--text-hint);text-align:center;margin-bottom:8px;}
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-title">澪花 腹部コース</div>
+      <div class="login-logo-sub">SNS投稿ジェネレーター</div>
+    </div>
+    <div id="loginMsg"></div>
+
+    <!-- STEP1: メール入力 -->
+    <div id="step1">
+      <label class="form-label">登録メールアドレス</label>
+      <input type="email" id="emailInput" placeholder="example@email.com">
+      <button class="login-btn" onclick="sendOtp()">認証コードを送信</button>
+      <p class="step-note">登録済みのメールアドレスにのみ<br>認証コードが届きます</p>
+    </div>
+
+    <!-- STEP2: OTP入力 -->
+    <div id="step2" style="display:none;">
+      <label class="form-label">認証コード（6桁）</label>
+      <input type="text" id="otpInput" placeholder="000000" maxlength="6" inputmode="numeric">
+      <button class="login-btn" onclick="verifyOtp()">ログイン</button>
+      <p class="step-note">メールに届いた6桁のコードを入力してください<br><br>
+        <span style="cursor:pointer;text-decoration:underline;color:var(--purple);" onclick="resetLogin()">メールアドレスを変更する</span>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div class="app-wrap" id="appWrap">
+  <div class="header">
+    <div class="header-inner">
+      <div class="header-title">澪花 腹部コース SNS</div>
+      <div>
+        <span class="header-user" id="userLabel"></span>
+        <button class="logout-btn" onclick="logout()">ログアウト</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <div class="section">
+      <div class="label">プラットフォーム</div>
+      <div class="chip-row" id="platformRow">
+        <div class="chip active" data-v="instagram">Instagram</div>
+        <div class="chip" data-v="threads">Threads</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="label">投稿の目的</div>
+      <div class="purpose-grid" id="purposeGrid">
+        <div class="pcard active" data-v="attract">
+          <div class="pcard-icon">✦</div>
+          <div class="pcard-title">集客・認知</div>
+          <div class="pcard-sub">新規に届ける</div>
+        </div>
+        <div class="pcard" data-v="trust">
+          <div class="pcard-icon">◈</div>
+          <div class="pcard-title">信頼・教育</div>
+          <div class="pcard-sub">価値・専門性を伝える</div>
+        </div>
+        <div class="pcard" data-v="announce">
+          <div class="pcard-icon">◉</div>
+          <div class="pcard-title">講座・告知</div>
+          <div class="pcard-sub">募集・販売につなげる</div>
+        </div>
+        <div class="pcard" data-v="daily">
+          <div class="pcard-icon">○</div>
+          <div class="pcard-title">日常・共感</div>
+          <div class="pcard-sub">人柄・ストーリーを伝える</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="label">トーン</div>
+      <select id="toneSelect">
+        <option value="warm">やさしく・温かみのある</option>
+        <option value="pro">専門的・信頼感のある</option>
+        <option value="story">体験談・ストーリー調</option>
+        <option value="question">問いかけ・共感型</option>
+      </select>
+    </div>
+
+    <div class="section">
+      <div class="label">テーマ・キーワード（任意）</div>
+      <textarea id="themeInput" rows="3" placeholder="例：お腹に手を当てると変わること&#10;五臓の疲れが腹部に出る話&#10;施術中の静けさについて"></textarea>
+      <div class="hint-text" id="hintText">※ 空欄でも自動生成されます</div>
+    </div>
+
+    <button class="gen-btn" onclick="generate()">投稿を生成する</button>
+
+    <div class="divider"></div>
+
+    <div class="out-section" id="outSection">
+      <div class="badge-row" id="outBadge"></div>
+      <div class="out-card">
+        <div class="out-label">冒頭フック</div>
+        <div class="out-text" id="outHook"></div>
+      </div>
+      <div class="out-card">
+        <div class="out-label">本文</div>
+        <div class="out-text" id="outBody"></div>
+      </div>
+      <div class="out-card">
+        <div class="out-label">CTA</div>
+        <div class="out-text" id="outCta"></div>
+      </div>
+      <div class="out-card caption-card">
+        <div class="out-label">完成キャプション（コピー用）</div>
+        <div class="out-text" id="outCaption"></div>
+        <button class="copy-btn" id="copyBtn" onclick="copyCaption()">コピーする</button>
+      </div>
+      <p class="save-note" id="saveNote"></p>
+      <div class="action-row">
+        <button class="action-btn save-btn" id="saveBtn" onclick="saveToSheet()">スプレッドシートに保存</button>
+        <button class="action-btn" onclick="generate()">別パターン生成</button>
+      </div>
+      <div class="action-row">
+        <button class="action-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">上に戻る</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwOK5F9nXh_pRT37q2zmnEtOKSoTdg8x5DTpxzL4aH1xXGA7m-0-xbNhZha0nWGvHX3HA/exec';
+
+/* ===== AUTH ===== */
+let currentEmail = '';
+let currentToken = '';
+
+function showMsg(msg, type){
+  const el = document.getElementById('loginMsg');
+  el.innerHTML = msg ? `<div class="msg-box msg-${type}">${msg}</div>` : '';
+}
+
+async function sendOtp(){
+  const email = document.getElementById('emailInput').value.trim();
+  if(!email){ showMsg('メールアドレスを入力してください', 'err'); return; }
+  const btn = document.querySelector('#step1 .login-btn');
+  btn.disabled = true; btn.textContent = '送信中…';
+  showMsg('', '');
+  try{
+    const res = await fetch(GAS_URL, {
+      method:'POST',
+      body: JSON.stringify({action:'sendOtp', email})
+    });
+    const d = await res.json();
+    if(d.ok){
+      currentEmail = email;
+      document.getElementById('step1').style.display = 'none';
+      document.getElementById('step2').style.display = 'block';
+      showMsg('認証コードを送信しました', 'ok');
+    } else {
+      showMsg(d.msg || '登録されていないメールアドレスです', 'err');
+    }
+  } catch(e){
+    showMsg('通信エラーが発生しました', 'err');
+  }
+  btn.disabled = false; btn.textContent = '認証コードを送信';
+}
+
+async function verifyOtp(){
+  const otp = document.getElementById('otpInput').value.trim();
+  if(otp.length !== 6){ showMsg('6桁のコードを入力してください', 'err'); return; }
+  const btn = document.querySelector('#step2 .login-btn');
+  btn.disabled = true; btn.textContent = '確認中…';
+  showMsg('', '');
+  try{
+    const res = await fetch(GAS_URL, {
+      method:'POST',
+      body: JSON.stringify({action:'verifyOtp', email:currentEmail, otp})
+    });
+    const d = await res.json();
+    if(d.ok){
+      currentToken = d.token;
+      sessionStorage.setItem('sns_token', d.token);
+      sessionStorage.setItem('sns_email', currentEmail);
+      startApp();
+    } else {
+      showMsg('コードが正しくありません。もう一度お試しください', 'err');
+    }
+  } catch(e){
+    showMsg('通信エラーが発生しました', 'err');
+  }
+  btn.disabled = false; btn.textContent = 'ログイン';
+}
+
+function resetLogin(){
+  document.getElementById('step1').style.display = 'block';
+  document.getElementById('step2').style.display = 'none';
+  document.getElementById('otpInput').value = '';
+  showMsg('', '');
+}
+
+function logout(){
+  sessionStorage.removeItem('sns_token');
+  sessionStorage.removeItem('sns_email');
+  location.reload();
+}
+
+function startApp(){
+  document.getElementById('loginWrap').style.display = 'none';
+  document.getElementById('appWrap').style.display = 'block';
+  const email = sessionStorage.getItem('sns_email') || currentEmail;
+  document.getElementById('userLabel').textContent = email + '　';
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const t = sessionStorage.getItem('sns_token');
+  const e = sessionStorage.getItem('sns_email');
+  if(t && e){ currentToken = t; currentEmail = e; startApp(); }
+});
+
+/* ===== TEMPLATES ===== */
+const FOOTER_IG = `．\n．\n．\n澪花 腹部コース\n\nお問い合わせはLINEから\n@111iozrg\n\n#澪花 #腹部施術 #腹部ケア #五臓 #内臓ケア #セラピスト #ボディケア #手あて #からだと向き合う`;
+const FOOTER_TH = `澪花 腹部コース\nお問い合わせはLINE @111iozrg まで。`;
+
+const T = {
+attract:{
+warm:[
+{
+hook:'お腹に手を当てると\nからだの声が聞こえてくる気がします。',
+body:`施術を重ねるうちに
+そう感じるようになりました。
+
+お腹は、内臓の地図。
+感情の記憶が宿る場所。
+その日の疲れが正直に出てくる場所。
+
+緊張しているとき
+怒りを飲み込んだとき
+悲しみをこらえてきたとき——
+
+それがそのままお腹に残っています。
+
+腹部の施術は
+症状に対処するだけでなく
+「自分のからだと話す時間」でもあります。
+
+触れてもらうことで
+気づいていなかった緊張がほどけて
+呼吸が深くなっていく。
+
+そのとき、からだは
+ようやく「安心した」と感じるんだと思います。`,
+cta:`施術に興味のある方は
+プロフィールのリンク、またはDMからお気軽にどうぞ。`
+},
+{
+hook:'「なんとなく不調が続く」——\nその答えは、お腹にあるかもしれません。',
+body:`肩こり、冷え、むくみ、胃の重さ、眠れない夜。
+
+これらの不調の多くは
+内臓の疲れや緊張と深くつながっています。
+
+東洋医学では「腹は全身の鏡」と言います。
+お腹の状態を診ることで
+からだ全体の流れが読み取れるんです。
+
+五臓のどこが弱っているか
+気血水の巡りが滞っているか
+感情の蓄積がどこにあるか——
+
+腹部を丁寧に診ながら
+「整える」ことを目指す施術です。
+
+「病院では異常なしと言われたけど不調が続く」
+そういう方に特に届いてほしいと思っています。`,
+cta:`施術のご予約・ご相談は
+プロフィールのリンクからどうぞ。`
+},
+{
+hook:'お腹を触ることは\n自分のからだを知ることの始まりだと思っています。',
+body:`どのくらい硬い？
+冷えている？
+どこを触ると違和感がある？
+
+自分のお腹の状態を
+知っている人は少ないです。
+
+でも、お腹はいつも
+正直にからだの状態を教えてくれています。
+
+腹部の施術では
+丁寧にお腹を診ながら
+「今のからだがどういう状態か」を
+一緒に確認していきます。
+
+「整える」という感覚は
+自分のからだを知るところから始まる。
+
+そのお手伝いができることが
+セラピストとしての喜びです。`,
+cta:`初めての方もお気軽にご相談ください。`
+}
+],
+pro:[
+{
+hook:'腹部施術が全身に影響する理由を\n解剖学的に説明します。',
+body:`内臓は筋膜でつながっています。
+
+腸が硬くなると
+→ 横隔膜の動きが制限される
+→ 呼吸が浅くなる
+→ 副交感神経が働きにくくなる
+→ 肩こり・不眠・冷えが悪化する
+
+この連鎖が、慢性的な不調の正体です。
+
+さらに東洋医学では
+五臓（肝・心・脾・肺・腎）の状態が
+お腹の特定の区域に現れるとされています。
+
+みぞおちの硬さ → 肝の緊張
+下腹の冷え → 腎の弱り
+へそ周りの張り → 脾胃の疲れ
+
+西洋の解剖学と東洋の五臓理論を重ねながら
+からだを読み、整えていきます。`,
+cta:`施術の詳細・ご予約はプロフィールのリンクから。`
+},
+{
+hook:'五臓とお腹の状態は\nこんなふうにつながっています。',
+body:`腹部には五臓の状態が現れます。
+
+【肝】みぞおち左〜脇腹
+ストレス・怒り・目の疲れがたまると
+硬さや圧痛として現れやすい
+
+【脾・胃】みぞおち中央〜へそ上
+消化器の疲れ・食べすぎ・思い悩みが影響する
+
+【腎】へそ下・腰周辺
+冷え・疲労の蓄積・恐れの感情と関係する
+
+【肺】鎖骨下〜みぞおちにかけて
+悲しみ・呼吸の浅さ・皮膚の乾燥と連動する
+
+【心】みぞおちからやや上
+興奮・不安・動悸が出やすい方に現れやすい
+
+お腹を診ながら
+五臓のどこにケアが必要かを読み取る。
+それが腹部施術の入口です。`,
+cta:`専門的な施術に興味のある方は
+プロフィールのリンクからご確認ください。`
+}
+],
+story:[
+{
+hook:'はじめて腹部施術を受けた方が\nこう言いました。',
+body:`「こんなに緊張してたんだ、自分」
+
+施術中、ぽつりと
+そうつぶやいてくれた言葉が忘れられません。
+
+触れるまで気づかなかったけれど
+お腹はずっと
+何かを抱えていた。
+
+感情が飲み込まれて
+からだの中に蓄積されていた。
+
+腹部施術はそこに
+ゆっくりと手を当てていく仕事です。
+
+解放されるとき
+呼吸が深くなって
+表情がふっと緩む。
+
+その瞬間を見るたびに
+この仕事を続けてよかったと思います。`,
+cta:`からだと向き合う時間を
+一緒につくりませんか。`
+},
+{
+hook:'施術中、お腹がぐるぐると動き出した日のこと。',
+body:`その音を聞いたお客様が
+「恥ずかしい…」と言っていたけれど
+
+施術が終わる頃には
+「なんかすごくすっきりした」と笑顔でした。
+
+お腹が動くということは
+内臓が目覚めているということ。
+
+止まっていたものが動き出して
+巡りが戻っていく。
+
+からだはもともと
+整う力を持っています。
+
+施術はその力を
+引き出すお手伝いをしているだけ。
+
+そのことを、この仕事をしながら
+何度も実感しています。`,
+cta:`体験したい方、気になる方は
+お気軽にDMください。`
+}
+],
+question:[
+{
+hook:'あなたのお腹、今どんな状態ですか？',
+body:`触ってみてください。
+
+硬い？
+冷えている？
+ぽっこり膨らんでいる？
+触れると違和感がある場所はありますか？
+
+お腹の状態は
+からだの内側の声を教えてくれます。
+
+みぞおちが硬い → ストレス・肝の疲れ
+へそ周りが冷たい → 腸・腎の弱り
+下腹が張っている → 気血が滞っているサイン
+
+自分のからだのことを
+もっとよく知ってほしいと思って
+この投稿を書いています。
+
+あなたのお腹は今
+どんなことを伝えようとしていますか。`,
+cta:`気になる方は、ぜひ一度施術を体験してみてください。`
+},
+{
+hook:'最近、自分のお腹に\nちゃんと触れていますか？',
+body:`忙しい毎日の中で
+自分のからだを後回しにしていませんか。
+
+お腹は、触れてもらうことで
+「大切にされている」と感じる場所でもあります。
+
+手を当てるだけで
+副交感神経が働きやすくなる。
+
+「安心する」という感覚は
+からだの反応として起きていること。
+
+腹部施術は
+技術だけでなく
+その「安心」を届けることだと思っています。
+
+まず、自分のお腹に
+やさしく手を当ててみてください。`,
+cta:`施術・ご相談はプロフィールまたはDMからどうぞ。`
+}
+]
+},
+trust:{
+warm:[
+{
+hook:'施術の前に、必ずお腹を観察します。',
+body:`色、温度、硬さ、張り、むくみ。
+
+お腹には
+からだのすべての情報が集まっています。
+
+東洋医学の「腹診」という診方では
+胃の区域、腸の区域
+肝の区域、腎の区域……
+それぞれの緊張や弱りを読み取ります。
+
+その情報をもとに
+どこから触れるか
+どのくらいの圧か
+今日はどこを優先するか
+すべてを組み立てていきます。
+
+同じお客様でも
+毎回お腹の状態は違います。
+
+だから毎回、最初に必ず診る。
+
+観察の積み重ねが
+「このお客様のからだをわかっている」という
+セラピストとしての力になっていきます。`,
+cta:`施術・ご予約はプロフィールのリンクから。`
+},
+{
+hook:'手を当てるだけで\nからだは変わります。',
+body:`腹部施術の中で
+わたしが一番大切にしていること——
+
+それは「安心する手あて」です。
+
+強く押すこと、ほぐすことより先に
+まず「ここは安全だ」と
+からだに感じてもらうこと。
+
+からだは緊張しているとき
+触れられても防御で固まります。
+
+やさしく、ゆっくりと
+「ここに来てもいいですよ」と伝えるように
+手を当てていく。
+
+そのとき
+呼吸が深くなって
+お腹が柔らかくなって
+自律神経が整っていく。
+
+この変化は
+技術より「在り方」から生まれると
+施術を続けながら感じています。`,
+cta:`セラピストとしての在り方も含めて学べる
+澪花腹部コース、ご案内中です。`
+}
+],
+pro:[
+{
+hook:'腹診（ふくしん）という診方について。',
+body:`東洋医学には「腹診」という身体観察法があります。
+
+お腹の状態を視覚・触覚で診ることで
+五臓の状態・気血水の流れ・感情の蓄積を
+読み取っていきます。
+
+胸腹区満（きょうふくくまん）と呼ばれる診断体系では
+お腹を複数の区域に分け
+それぞれの硬さ・圧痛・温度・色を観察します。
+
+例えば——
+みぞおち（心下）の硬さ → 肝気の鬱滞
+臍周辺の動悸・硬さ → 腎の虚
+鼠径部の緊張 → 肝経・衝脈の滞り
+
+この診方を知ることで
+「なぜここが硬いのか」
+「何から整えるべきか」が
+見えてきます。
+
+腹部施術は観察から始まります。`,
+cta:`詳しく学びたい方は
+プロフィールのリンクからどうぞ。`
+},
+{
+hook:'「安心する手あて」が\nなぜからだを変えるのか。',
+body:`ポリヴェーガル理論では
+安全を感じると
+腹側迷走神経複合体が活性化し
+社会的な繋がり・消化・回復が促進されると
+説明されています。
+
+つまり「安心する」という感覚は
+神経系レベルで起きていること。
+
+やさしく手を当てると
+→ 安全シグナルが神経系に伝わる
+→ 交感神経の過活動が落ち着く
+→ 副交感神経が優位になる
+→ 内臓の蠕動運動が回復する
+→ 血流・消化・排泄が整う
+
+腹部施術はこの連鎖を
+手の温かさと圧から意図的に引き出します。
+
+「安心」はケアの副産物ではなく
+主役のひとつだと思っています。`,
+cta:`施術・講座のご案内はプロフィールから。`
+}
+],
+story:[
+{
+hook:'「先生の手が当たっただけで\n泣けてきました」と言われた日のこと。',
+body:`強がりなお客様でした。
+
+いつも「大丈夫です」「平気です」と言う方が
+腹部に手が触れた瞬間
+静かに涙をこぼした。
+
+からだが緊張を手放すとき
+感情も一緒にほどけることがあります。
+
+お腹は
+言葉にできなかったことを
+蓄えている場所でもあるから。
+
+仕事のプレッシャー
+「大丈夫」と言い続けた疲れ
+誰にも言えなかった重さ——
+
+そういうものが
+内臓の周りに積み重なっていく。
+
+手を当てることで
+その積み重ねが少しずつほどける。
+
+言葉よりも深いところへ届く施術だと
+この仕事をしながら感じています。`,
+cta:`からだの声を聞く時間を
+一緒につくりませんか。`
+}
+],
+question:[
+{
+hook:'「整う」という感覚\nあなたはどんなイメージがありますか？',
+body:`「からだが軽い」
+「呼吸が深くなった」
+「なんか頭がすっきりした」
+「ここが緊張してたんだって、初めてわかった」
+
+腹部施術の後にお客様からよく聞く言葉です。
+
+この変化は
+内臓の位置が整い
+横隔膜の動きが回復し
+副交感神経が優位になったサイン。
+
+「整う」とは
+数値でわかるものではなく
+からだで感じるもの。
+
+五臓の状態が読めるようになると
+なぜ整うのかが
+言葉で説明できるようになります。
+
+セラピストとして
+その変化を一緒に体感したい。`,
+cta:`体験・ご相談はプロフィールのリンクから。`
+}
+]
+},
+announce:{
+warm:[
+{
+hook:'澪花 腹部コース\n受講生を募集しています。',
+body:`腹部施術を「深く・正しく」学びたいセラピストの方へ。
+
+澪花の腹部コースでは
+技術だけでなく
+「施術者としての在り方」まで含めて学べます。
+
+内容は
+五臓と腹部の関係・腹診の読み方
+内臓への手あてと安心を届けるアプローチ
+気血水の巡りの整え方
+お客様の感情の動きへの寄り添い方
+自律神経と腹部の関係（ポリヴェーガル理論）
+
+「ほぐす」だけでない
+本質的な腹部施術を
+一緒に学びましょう。`,
+cta:`詳細・お申し込みは
+プロフィールのリンクからご確認ください。`
+},
+{
+hook:'学んだあと、施術の「見え方」が変わりました。',
+body:`腹部コースを学ぶ前は
+「お腹をほぐす施術」という認識でした。
+
+でも学んでからわかったのは
+お腹を診ることは
+からだ全体を診ることだということ。
+
+五臓の状態がお腹に出る。
+感情の蓄積がお腹に出る。
+自律神経の乱れがお腹に出る。
+
+その「見え方」が変わると
+施術のすべてが変わります。
+
+何をするかより
+なぜそこに手を当てるかが
+わかるようになる。
+
+同じように変わりたいと感じているセラピストの方に
+届いてほしいと思っています。`,
+cta:`詳細はプロフィールのリンクから。
+ご質問はDMまたはLINEへ。`
+}
+],
+pro:[
+{
+hook:'澪花 腹部コース カリキュラム詳細。',
+body:`【腹部観察・腹診】
+五臓と腹部区域の対応
+胸腹区満（東洋腹診）
+気血水の読み取り方
+温度・硬さ・色・張りの観察法
+
+【手あての基礎】
+安心を届ける手あての在り方
+副交感神経を引き出すアプローチ
+ポリヴェーガル理論と腹部施術の関係
+感情の蓄積へのアプローチ
+
+【内臓ケア】
+各内臓（肝・脾胃・腸・腎）への手あて
+気血水の巡りを整えるアプローチ
+腹部と自律神経の連鎖
+
+【クレイ応用】
+五臓×腹部診断ゾーンへのクレイ活用
+腹部アセスメントとクレイ選択
+
+修了後：腹部コース開講権
+　　　　母の手あて講座 開講権取得`,
+cta:`詳細・ご相談はプロフィールのリンクから。`
+}
+],
+story:[
+{
+hook:'腹部コースで学んで\nいちばん変わったのは「在り方」でした。',
+body:`技術は練習すれば上手くなる。
+
+でも学んでみてわかったのは
+腹部施術で一番大切なのは
+「どう触れるか」よりも
+「どういう状態で触れるか」だということ。
+
+焦っているとき
+頭で考えすぎているとき
+そういう状態で触れても
+お客様のからだは開いてくれない。
+
+自分が落ち着いていて
+安心を持って触れるとき
+はじめてお客様のからだも応えてくれる。
+
+施術者の在り方が
+そのまま施術の質になる。
+
+それをからだで理解できたことが
+腹部コースで一番の学びでした。`,
+cta:`一緒に学びませんか。
+詳細はプロフィールのリンクから。`
+}
+],
+question:[
+{
+hook:'腹部施術について\n「もっと深く理解したい」と思っていますか？',
+body:`「お腹をほぐしているのに
+ なぜ全身に効くのかわからない」
+
+「五臓との関係を知りたいけど
+ どこで学べばいいかわからない」
+
+「お客様の感情が動いたとき
+ どう対応すればいいかわからない」
+
+そういう壁を感じているセラピストの方に
+澪花の腹部コースは届いてほしいと思います。
+
+東洋医学の腹診・五臓の読み方
+ポリヴェーガル理論
+安心を届ける手あての在り方まで
+
+ひとつながりで学べます。`,
+cta:`まずはご相談から。
+プロフィールのリンクまたはDMへ。`
+}
+]
+},
+daily:{
+warm:[
+{
+hook:'今日も一日\nたくさんのお腹に触れました。',
+body:`施術を終えるたびに
+からだって本当に正直だと思います。
+
+言葉では「大丈夫」と言っていても
+お腹は緊張を隠せない。
+
+最近疲れているな、とか
+何か抱えているんだな、とか
+手を当てると伝わってくる。
+
+そこに丁寧に向き合って
+ゆっくりとほぐれていくのを感じながら
+
+「今日も来てくれてよかった」と思う。
+
+何百回施術しても
+お腹に触れる瞬間は
+毎回新しい出会いのようです。
+
+今日来てくれたみなさん
+ありがとうございました。`,
+cta:`施術のご予約・ご相談はプロフィールから。`
+},
+{
+hook:'施術の前に、少しだけ\n自分のお腹に手を当てます。',
+body:`セラピストとして
+まず自分が整っていること。
+
+焦っていないか
+頭が忙しすぎていないか
+
+お腹に手を当てると
+今の自分の状態がわかります。
+
+自分のからだに触れながら
+「今日もていねいに届けよう」と思う。
+
+その小さな準備が
+施術の質につながると信じています。
+
+施術者も人間だから
+整えてもらう時間が必要で
+まず自分を満たしてから
+お客様に向かいたい。`,
+cta:`セラピストの日常も、これからも発信していきます。`
+}
+],
+story:[
+{
+hook:'「また来ます」と言ってもらえた日のこと。',
+body:`施術が終わって
+「ありがとうございました」のあとに
+「また来ます」。
+
+その一言が
+本当に嬉しかった。
+
+からだの変化を感じてもらえた。
+また来たいと思ってもらえた。
+
+「治してあげた」じゃなくて
+「一緒に整えた」という感覚。
+
+お客様のからだは
+もともと整う力を持っている。
+
+わたしはそのお手伝いをしているだけ。
+
+それでも「また来ます」という言葉は
+セラピストとして
+一番報われる瞬間です。`,
+cta:`初めての方もお気軽にご相談ください。`
+}
+],
+question:[
+{
+hook:'最近、自分のお腹の状態を\n確認しましたか？',
+body:`セラピストも、自分のお腹を後回しにしがちです。
+
+でも、自分が気づかないうちに
+お腹が硬くなっていたり
+冷えていたり
+張っていたりする。
+
+みぞおちが硬ければ
+ストレスや感情の蓄積がある。
+
+下腹が冷えていれば
+腎の疲れのサインかもしれない。
+
+まず自分のお腹に
+やさしく手を当てる。
+
+それがセラピストとしても
+自分自身としても
+大切なケアだと思っています。
+
+あなたのお腹は今
+どんな状態ですか？`,
+cta:`無理せず、まず自分から。`
+}
+]
+}
+};
+
+/* ===== APP LOGIC ===== */
+let platform='instagram', purpose='attract', tone='warm';
+let currentTpl = null;
+
+document.getElementById('platformRow').addEventListener('click',e=>{
+  const t=e.target.closest('[data-v]');
+  if(!t)return;
+  platform=t.dataset.v;
+  document.querySelectorAll('#platformRow [data-v]').forEach(c=>c.classList.remove('active'));
+  t.classList.add('active');
+});
+
+document.getElementById('purposeGrid').addEventListener('click',e=>{
+  const t=e.target.closest('[data-v]');
+  if(!t)return;
+  purpose=t.dataset.v;
+  document.querySelectorAll('#purposeGrid [data-v]').forEach(c=>c.classList.remove('active'));
+  t.classList.add('active');
+  updateHint();
+});
+
+document.getElementById('toneSelect').addEventListener('change',e=>{ tone=e.target.value; });
+
+const HINTS={
+  attract:'例：お腹に手を当てると変わること・五臓の疲れが腹部に出る話・整う感覚について',
+  trust:'例：腹診とは・安心する手あて・ポリヴェーガルと腹部の関係・五臓の読み方',
+  announce:'例：腹部コースの内容・受講生の変化・学びの気づき',
+  daily:'例：今日の施術エピソード・自分のお腹のケア・セラピストの日常'
+};
+
+function updateHint(){
+  document.getElementById('hintText').textContent = HINTS[purpose]||'※ 空欄でも自動生成されます';
+}
+
+const PURPOSE_LBL={attract:'集客・認知',trust:'信頼・教育',announce:'講座・告知',daily:'日常・共感'};
+const PURPOSE_CLS={attract:'#E1F5EE',trust:'#E6F1FB',announce:'#FAEEDA',daily:'#FBEAF0'};
+const PURPOSE_TXT={attract:'#085041',trust:'#0C447C',announce:'#633806',daily:'#72243E'};
+
+function generate(){
+  const theme=document.getElementById('themeInput').value.trim();
+  let pool=T[purpose]?.[tone]||T[purpose]?.warm||[];
+  if(!pool||pool.length===0){
+    const k=Object.keys(T[purpose]||{})[0];
+    pool=k?T[purpose][k]:[];
+  }
+  let tpl;
+  if(!pool||pool.length===0){
+    tpl={hook:'腹部施術を通じて\nお客様のからだに向き合う毎日です。',body:'丁寧に、ていねいに。\nそれだけを心がけています。\n\nお腹に手を当てるとき\nからだが教えてくれることがあります。\n\nその声に耳を傾けながら\n施術を続けています。',cta:'ご相談はお気軽にDMください。'};
+  } else {
+    const idx=Math.floor(Math.random()*pool.length);
+    tpl=JSON.parse(JSON.stringify(pool[idx]));
+    if(theme){ tpl.body=theme+'\n\n'+tpl.body; }
+  }
+  currentTpl=tpl;
+  const foot=platform==='instagram'?FOOTER_IG:FOOTER_TH;
+  const full=tpl.hook+'\n\n'+tpl.body+'\n\n'+tpl.cta+'\n\n'+foot;
+  document.getElementById('outHook').textContent=tpl.hook;
+  document.getElementById('outBody').textContent=tpl.body;
+  document.getElementById('outCta').textContent=tpl.cta;
+  document.getElementById('outCaption').textContent=full;
+  document.getElementById('outBadge').innerHTML=
+    `<span class="badge" style="background:var(--purple-light);color:var(--purple-dark);">澪花 腹部コース</span>`+
+    `<span class="badge" style="background:${PURPOSE_CLS[purpose]};color:${PURPOSE_TXT[purpose]};">${PURPOSE_LBL[purpose]}</span>`+
+    `<span class="badge" style="background:var(--bg-s);color:var(--text-sub);">${platform==='instagram'?'Instagram':'Threads'}</span>`;
+  const btn=document.getElementById('copyBtn');
+  btn.textContent='コピーする'; btn.className='copy-btn';
+  document.getElementById('saveBtn').disabled=false;
+  document.getElementById('saveNote').textContent='';
+  document.getElementById('outSection').classList.add('visible');
+  document.getElementById('outSection').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function copyCaption(){
+  const text=document.getElementById('outCaption').textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copyBtn');
+    btn.textContent='コピーしました';
+    btn.classList.add('copy-ok');
+    setTimeout(()=>{btn.textContent='コピーする';btn.classList.remove('copy-ok');},2500);
+  });
+}
+
+async function saveToSheet(){
+  if(!currentTpl)return;
+  const btn=document.getElementById('saveBtn');
+  btn.disabled=true; btn.textContent='保存中…';
+  const payload={
+    action:'save',
+    token:currentToken,
+    email:currentEmail,
+    platform,
+    purpose:PURPOSE_LBL[purpose],
+    tone:document.getElementById('toneSelect').options[document.getElementById('toneSelect').selectedIndex].text,
+    theme:document.getElementById('themeInput').value.trim(),
+    hook:currentTpl.hook,
+    body:currentTpl.body,
+    cta:currentTpl.cta,
+    caption:document.getElementById('outCaption').textContent,
+    saved_at:new Date().toLocaleString('ja-JP')
+  };
+  try{
+    const res=await fetch(GAS_URL,{method:'POST',body:JSON.stringify(payload)});
+    const d=await res.json();
+    if(d.ok){
+      document.getElementById('saveNote').textContent='保存しました';
+      document.getElementById('saveNote').style.color='var(--green-text)';
+    } else {
+      document.getElementById('saveNote').textContent='保存に失敗しました';
+      document.getElementById('saveNote').style.color='var(--red-text)';
+    }
+  } catch(e){
+    document.getElementById('saveNote').textContent='通信エラーが発生しました';
+    document.getElementById('saveNote').style.color='var(--red-text)';
+  }
+  btn.disabled=false; btn.textContent='スプレッドシートに保存';
+}
+
+updateHint();
+</script>
+</body>
+</html>
