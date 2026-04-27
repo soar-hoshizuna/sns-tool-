@@ -168,8 +168,9 @@ select:focus,textarea:focus,input:focus{outline:none;border-color:var(--purple-m
           <textarea class="edit-area" id="editCta" style="display:none;" rows="3" oninput="syncCaption()"></textarea>
         </div>
         <div class="out-card caption-card">
-          <div class="out-label"><span>完成キャプション（コピー用）</span></div>
+          <div class="out-label"><span>完成キャプション（コピー用）</span><button class="edit-toggle" onclick="toggleCaptionEdit()">編集</button></div>
           <div class="out-text" id="outCaption"></div>
+          <textarea class="edit-area" id="editCaption" style="display:none;" rows="14"></textarea>
           <button class="copy-btn" id="copyBtn" onclick="copyCaption()">コピーする</button>
         </div>
         <p class="save-note" id="saveNote"></p>
@@ -231,8 +232,20 @@ function showTab(name,btn){
   if(name==='saved')renderSaved();
 }
 
-const FIG=`．\n．\n．\n澪花 腹部コース\n\nお問い合わせはLINEから\n@111iozrg\n\n#澪花 #腹部施術 #腹部ケア #五臓 #内臓ケア #セラピスト #ボディケア #手あて #からだと向き合う`;
-const FTH=`澪花 腹部コース\nお問い合わせはLINE @111iozrg まで。`;
+const FIG=`．
+．
+．
+澪花 腹部コース
+
+お問い合わせは
+
+`;
+const FTH=`
+
+澪花 腹部コース
+お問い合わせは
+
+`;
 
 const T={
   "attract": {
@@ -1237,8 +1250,852 @@ const T={
   }
 };
 
+const THREADS_T={
+  "attract": {
+    "warm": [
+      {
+        "hook": "お腹って、ほんと正直。",
+        "body": "大丈夫って言ってる人ほど\n触れると力が抜けないことがある。\n\nからだは\n言葉より先に教えてくれる。",
+        "cta": ""
+      },
+      {
+        "hook": "呼吸が浅い人って",
+        "body": "胸だけじゃなくて\nお腹も止まってることが多い。\n\nここが変わると\nふっと楽になる人がいる。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹に手を当てると",
+        "body": "今の自分の状態が\n思っているより分かる。\n\n冷たい。\n硬い。\n落ち着く。\n\n全部サイン。",
+        "cta": ""
+      },
+      {
+        "hook": "疲れてる人ほど",
+        "body": "お腹が静かに固まってることがある。\n\n本人は気づいてない。\nでも、手は分かる。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹がゆるむと",
+        "body": "顔がふっと変わる人がいる。\n\n顔を触ってないのに。\n\nからだって\nほんとにつながってる。",
+        "cta": ""
+      },
+      {
+        "hook": "なんとなくしんどい時",
+        "body": "背中でも首でもなく\nお腹に出てることがある。\n\nそこを見る視点って\nすごく大事。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹を見ないまま",
+        "body": "全身を整えるのって\n実は難しいことがある。\n\n不調の場所と\n原因の場所は違うことがあるから。",
+        "cta": ""
+      },
+      {
+        "hook": "力が抜けない人って",
+        "body": "お腹の奥に\nずっと力が入ってることがある。\n\nゆるめ方は\n強く押すことじゃない。",
+        "cta": ""
+      },
+      {
+        "hook": "冷えって",
+        "body": "手足だけじゃなくて\nお腹にも出る。\n\nお腹の冷えは\n見逃されやすい。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹は",
+        "body": "その人が頑張ってきた時間を\n静かに覚えてる場所だと思う。",
+        "cta": ""
+      }
+    ],
+    "pro": [
+      {
+        "hook": "腹部って",
+        "body": "筋肉だけじゃなくて\n呼吸・内臓・自律神経が重なる場所。\n\nだから触れ方で\n反応がかなり変わる。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹の張りは",
+        "body": "ただ硬い、だけじゃない。\n\n冷えてる張り。\n緊張してる張り。\n重たい張り。\n\n触れると違う。",
+        "cta": ""
+      },
+      {
+        "hook": "呼吸を見るなら",
+        "body": "胸だけじゃなくて\nお腹の動きも見る。\n\nここが止まってる人は多い。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹の質感は",
+        "body": "施術のヒントになる。\n\nふわっとしてる。\n奥が硬い。\n冷たい。\n動かない。\n\n全部、見立ての材料。",
+        "cta": ""
+      },
+      {
+        "hook": "腹部施術は",
+        "body": "強く押すほど良いものじゃない。\n\n受け取れる圧で触れることが\nかなり大事。",
+        "cta": ""
+      },
+      {
+        "hook": "内臓の基礎を知ると",
+        "body": "お腹の見え方が変わる。\n\nただの張りじゃなく\nからだの反応として見えてくる。",
+        "cta": ""
+      },
+      {
+        "hook": "自律神経の反応は",
+        "body": "お腹にも出る。\n\n力が抜けない。\n呼吸が浅い。\n張りやすい。\n\n見逃しやすい場所。",
+        "cta": ""
+      },
+      {
+        "hook": "五臓の視点は",
+        "body": "難しい理論を話すためじゃなくて\nお腹の反応を立体的に見るために使う。",
+        "cta": ""
+      },
+      {
+        "hook": "腹部を見る力は",
+        "body": "施術の判断力になる。\n\nどこを触るかより\n今、何を見ているか。",
+        "cta": ""
+      },
+      {
+        "hook": "腹部施術は",
+        "body": "知識だけでも\n感覚だけでも足りない。\n\n両方がいる。",
+        "cta": ""
+      }
+    ],
+    "story": [
+      {
+        "hook": "施術後に",
+        "body": "「呼吸しやすい」って言われることがある。\n\nお腹を触っただけなのに。\n\nだから腹部はおもしろい。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹に触れた瞬間",
+        "body": "ふっと力が抜ける人がいる。\n\nその瞬間が好き。\n\nからだが安心した感じがする。",
+        "cta": ""
+      },
+      {
+        "hook": "「お腹ってこんな硬いんですね」",
+        "body": "そう言われることが多い。\n\n自分のお腹の状態って\n意外と知らない。",
+        "cta": ""
+      },
+      {
+        "hook": "涙が出る人もいる。",
+        "body": "痛いわけじゃない。\n悲しい話をしたわけでもない。\n\nからだがほどける時って\nそういうことがある。",
+        "cta": ""
+      },
+      {
+        "hook": "「ここ触られたことないです」",
+        "body": "腹部施術でよく聞く言葉。\n\nでも、ここに\n大切なヒントがあることが多い。",
+        "cta": ""
+      },
+      {
+        "hook": "施術後の顔を見ると",
+        "body": "お腹がゆるんだかどうか\n分かる時がある。\n\n顔を触ってないのに\n表情が変わる。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹に触れる時は",
+        "body": "毎回、少し緊張感がある。\n\n繊細な場所だからこそ\n丁寧に触れたい。",
+        "cta": ""
+      },
+      {
+        "hook": "今日も思った。",
+        "body": "お腹は急がせたらダメ。\n\n待つと変わる。\n待てないと固まる。",
+        "cta": ""
+      },
+      {
+        "hook": "腹部施術って",
+        "body": "派手じゃない。\n\nでも、深い。\n\n受けた人にしか分からない変化がある。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹がゆるんだ後の",
+        "body": "静かな表情が好き。\n\nやっと休めた、みたいな顔になる。",
+        "cta": ""
+      }
+    ],
+    "question": [
+      {
+        "hook": "最近、",
+        "body": "自分のお腹に手を当てた？\n\n硬い？\n冷たい？\nほっとする？\n\nそれ、今のからだの声かも。",
+        "cta": ""
+      },
+      {
+        "hook": "その疲れ、",
+        "body": "本当に筋肉だけの問題かな。\n\nお腹から見ると\n違うヒントが見えることがある。",
+        "cta": ""
+      },
+      {
+        "hook": "呼吸、",
+        "body": "お腹まで入ってる？\n\n胸だけで吸ってる人\n思ってるより多い。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹が硬いって",
+        "body": "気づいたことある？\n\n普段触らないから\n見逃してる人が多い。",
+        "cta": ""
+      },
+      {
+        "hook": "施術しても戻る時",
+        "body": "不調の場所だけを見てない？\n\nお腹に反応が出てることもある。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹を触られるのが不安な人ほど",
+        "body": "丁寧な触れ方が大事。\n\n強い圧じゃなくて\n安心できる手。",
+        "cta": ""
+      },
+      {
+        "hook": "からだの声って",
+        "body": "大きな痛みだけじゃない。\n\nお腹の張りや冷えも\nちゃんとしたサイン。",
+        "cta": ""
+      },
+      {
+        "hook": "お客様のからだ、",
+        "body": "表面だけで見てない？\n\nお腹を見ると\n施術の視点が変わることがある。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹って",
+        "body": "触れるだけで分かることがある。\n\nでも\n触れ方を知らないと分からない。",
+        "cta": ""
+      },
+      {
+        "hook": "今の施術に",
+        "body": "腹部を見る視点が入ったら\n何が変わると思う？",
+        "cta": ""
+      }
+    ]
+  },
+  "trust": {
+    "warm": [
+      {
+        "hook": "お腹に触れる時は",
+        "body": "技術より先に\n安心感が大事。\n\n安心できないと\nからだは守ろうとする。",
+        "cta": ""
+      },
+      {
+        "hook": "澪花で大切にしてるのは",
+        "body": "変えようとしすぎないこと。\n\nお腹は\n待つと変わることがある。",
+        "cta": ""
+      },
+      {
+        "hook": "やさしい手と",
+        "body": "ただ弱い手は違う。\n\nお腹は繊細だから\n“届くやさしさ”が必要。",
+        "cta": ""
+      },
+      {
+        "hook": "腹部施術は",
+        "body": "勢いで触る場所じゃない。\n\n呼吸、反応、質感。\n\n全部見ながら進める。",
+        "cta": ""
+      },
+      {
+        "hook": "触れる前から",
+        "body": "施術は始まってる。\n\n説明。\n間合い。\n安心感。\n\nお腹はそこも受け取る。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹は",
+        "body": "その人の頑張りが出る場所だと思う。\n\nだからこそ\n責めるように触れたくない。",
+        "cta": ""
+      },
+      {
+        "hook": "強く押すより",
+        "body": "からだが受け取れる圧を探す。\n\n腹部施術は\nそこが大切。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹を触るなら",
+        "body": "知識もいる。\n感覚もいる。\n\nどちらかだけでは浅くなる。",
+        "cta": ""
+      },
+      {
+        "hook": "施術者の迷いって",
+        "body": "手から伝わる。\n\nだから\n見立てがあることは安心感になる。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹がゆるむ時",
+        "body": "からだが納得した感じがする。\n\n無理やりじゃない変化。",
+        "cta": ""
+      }
+    ],
+    "pro": [
+      {
+        "hook": "腹部って",
+        "body": "筋肉だけじゃなくて\n呼吸・内臓・自律神経が重なる場所。\n\nだから触れ方で\n反応がかなり変わる。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹の張りは",
+        "body": "ただ硬い、だけじゃない。\n\n冷えてる張り。\n緊張してる張り。\n重たい張り。\n\n触れると違う。",
+        "cta": ""
+      },
+      {
+        "hook": "呼吸を見るなら",
+        "body": "胸だけじゃなくて\nお腹の動きも見る。\n\nここが止まってる人は多い。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹の質感は",
+        "body": "施術のヒントになる。\n\nふわっとしてる。\n奥が硬い。\n冷たい。\n動かない。\n\n全部、見立ての材料。",
+        "cta": ""
+      },
+      {
+        "hook": "腹部施術は",
+        "body": "強く押すほど良いものじゃない。\n\n受け取れる圧で触れることが\nかなり大事。",
+        "cta": ""
+      },
+      {
+        "hook": "内臓の基礎を知ると",
+        "body": "お腹の見え方が変わる。\n\nただの張りじゃなく\nからだの反応として見えてくる。",
+        "cta": ""
+      },
+      {
+        "hook": "自律神経の反応は",
+        "body": "お腹にも出る。\n\n力が抜けない。\n呼吸が浅い。\n張りやすい。\n\n見逃しやすい場所。",
+        "cta": ""
+      },
+      {
+        "hook": "五臓の視点は",
+        "body": "難しい理論を話すためじゃなくて\nお腹の反応を立体的に見るために使う。",
+        "cta": ""
+      },
+      {
+        "hook": "腹部を見る力は",
+        "body": "施術の判断力になる。\n\nどこを触るかより\n今、何を見ているか。",
+        "cta": ""
+      },
+      {
+        "hook": "腹部施術は",
+        "body": "知識だけでも\n感覚だけでも足りない。\n\n両方がいる。",
+        "cta": ""
+      }
+    ],
+    "story": [
+      {
+        "hook": "施術後に",
+        "body": "「呼吸しやすい」って言われることがある。\n\nお腹を触っただけなのに。\n\nだから腹部はおもしろい。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹に触れた瞬間",
+        "body": "ふっと力が抜ける人がいる。\n\nその瞬間が好き。\n\nからだが安心した感じがする。",
+        "cta": ""
+      },
+      {
+        "hook": "「お腹ってこんな硬いんですね」",
+        "body": "そう言われることが多い。\n\n自分のお腹の状態って\n意外と知らない。",
+        "cta": ""
+      },
+      {
+        "hook": "涙が出る人もいる。",
+        "body": "痛いわけじゃない。\n悲しい話をしたわけでもない。\n\nからだがほどける時って\nそういうことがある。",
+        "cta": ""
+      },
+      {
+        "hook": "「ここ触られたことないです」",
+        "body": "腹部施術でよく聞く言葉。\n\nでも、ここに\n大切なヒントがあることが多い。",
+        "cta": ""
+      },
+      {
+        "hook": "施術後の顔を見ると",
+        "body": "お腹がゆるんだかどうか\n分かる時がある。\n\n顔を触ってないのに\n表情が変わる。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹に触れる時は",
+        "body": "毎回、少し緊張感がある。\n\n繊細な場所だからこそ\n丁寧に触れたい。",
+        "cta": ""
+      },
+      {
+        "hook": "今日も思った。",
+        "body": "お腹は急がせたらダメ。\n\n待つと変わる。\n待てないと固まる。",
+        "cta": ""
+      },
+      {
+        "hook": "腹部施術って",
+        "body": "派手じゃない。\n\nでも、深い。\n\n受けた人にしか分からない変化がある。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹がゆるんだ後の",
+        "body": "静かな表情が好き。\n\nやっと休めた、みたいな顔になる。",
+        "cta": ""
+      }
+    ],
+    "question": [
+      {
+        "hook": "最近、",
+        "body": "自分のお腹に手を当てた？\n\n硬い？\n冷たい？\nほっとする？\n\nそれ、今のからだの声かも。",
+        "cta": ""
+      },
+      {
+        "hook": "その疲れ、",
+        "body": "本当に筋肉だけの問題かな。\n\nお腹から見ると\n違うヒントが見えることがある。",
+        "cta": ""
+      },
+      {
+        "hook": "呼吸、",
+        "body": "お腹まで入ってる？\n\n胸だけで吸ってる人\n思ってるより多い。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹が硬いって",
+        "body": "気づいたことある？\n\n普段触らないから\n見逃してる人が多い。",
+        "cta": ""
+      },
+      {
+        "hook": "施術しても戻る時",
+        "body": "不調の場所だけを見てない？\n\nお腹に反応が出てることもある。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹を触られるのが不安な人ほど",
+        "body": "丁寧な触れ方が大事。\n\n強い圧じゃなくて\n安心できる手。",
+        "cta": ""
+      },
+      {
+        "hook": "からだの声って",
+        "body": "大きな痛みだけじゃない。\n\nお腹の張りや冷えも\nちゃんとしたサイン。",
+        "cta": ""
+      },
+      {
+        "hook": "お客様のからだ、",
+        "body": "表面だけで見てない？\n\nお腹を見ると\n施術の視点が変わることがある。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹って",
+        "body": "触れるだけで分かることがある。\n\nでも\n触れ方を知らないと分からない。",
+        "cta": ""
+      },
+      {
+        "hook": "今の施術に",
+        "body": "腹部を見る視点が入ったら\n何が変わると思う？",
+        "cta": ""
+      }
+    ]
+  },
+  "announce": {
+    "warm": [
+      {
+        "hook": "澪花腹部コースは",
+        "body": "お腹から全身を見る視点を学ぶ講座です。\n\n手順だけじゃなく\n見立てと触れ方を大切にします。",
+        "cta": ""
+      },
+      {
+        "hook": "腹部施術を",
+        "body": "サロンメニューに入れたい方へ。\n\nお腹を見られると\n施術の幅が変わります。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹を触るのが不安な方ほど",
+        "body": "ちゃんと学んでほしい。\n\n腹部は繊細だから\n基礎が大事。",
+        "cta": ""
+      },
+      {
+        "hook": "今の施術に",
+        "body": "腹部を見る視点を足すと\nお客様の見え方が変わります。",
+        "cta": ""
+      },
+      {
+        "hook": "澪花腹部コースでは",
+        "body": "筋肉・内臓・自律神経・五臓の基礎を\n現場で使える形に落とします。",
+        "cta": ""
+      },
+      {
+        "hook": "手技だけ増やすより",
+        "body": "見立てを持つこと。\n\n腹部施術は\nそこが大きな差になる。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹を見られるセラピストは",
+        "body": "お客様に伝えられることが増える。\n\n説明力も施術の一部。",
+        "cta": ""
+      },
+      {
+        "hook": "腹部ケアを",
+        "body": "自信を持って提供したい方へ。\n\n安全に、丁寧に学ぶコースです。",
+        "cta": ""
+      },
+      {
+        "hook": "澪花腹部コースは",
+        "body": "本講座ではなく\n腹部に特化した内容です。\n\n取り入れやすい形で学びます。",
+        "cta": ""
+      },
+      {
+        "hook": "施術に深さを出したいなら",
+        "body": "お腹を見る視点は\nかなり大きな武器になります。",
+        "cta": ""
+      }
+    ],
+    "pro": [
+      {
+        "hook": "澪花腹部コースは",
+        "body": "腹部施術に必要な基礎と実技を学ぶ内容です。\n\n本講座の内容ではなく\n腹部に特化しています。",
+        "cta": ""
+      },
+      {
+        "hook": "腹部施術には",
+        "body": "解剖生理の基礎が必要です。\n\n感覚だけで触らないために。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹の見立てができると",
+        "body": "施術の組み立てが変わります。\n\nどこを触るか。\nなぜ触るか。\nどう変化を見るか。",
+        "cta": ""
+      },
+      {
+        "hook": "安全に腹部を触るには",
+        "body": "圧、順番、反応を見る力が必要。\n\nここを講座で丁寧に扱います。",
+        "cta": ""
+      },
+      {
+        "hook": "サロンメニューに腹部を入れるなら",
+        "body": "ただのマッサージではなく\n価値が伝わる設計が大事。",
+        "cta": ""
+      },
+      {
+        "hook": "腹部施術は",
+        "body": "お客様への説明力も必要です。\n\nなぜお腹を見るのかを\n伝えられること。",
+        "cta": ""
+      },
+      {
+        "hook": "筋肉・内臓・自律神経",
+        "body": "別々に覚えるより\n施術の中でどう見るかが大事。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹の質感を見られると",
+        "body": "施術の判断が変わります。\n\n張り、冷え、硬さ、動き。",
+        "cta": ""
+      },
+      {
+        "hook": "腹部コースでは",
+        "body": "学んで終わりではなく\n現場で使える形を目指します。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹を見られる力は",
+        "body": "施術者の強みになります。\n\n差別化にもつながる視点。",
+        "cta": ""
+      }
+    ],
+    "story": [
+      {
+        "hook": "受講後に",
+        "body": "“お腹を見るのが怖くなくなった”\nと言われることがあります。\n\n基礎があると手が変わる。",
+        "cta": ""
+      },
+      {
+        "hook": "“なんとなく触ってた”",
+        "body": "そこから卒業するための\n腹部コースです。\n\n見立てがあると迷いが減る。",
+        "cta": ""
+      },
+      {
+        "hook": "受講生さんが驚くのは",
+        "body": "お腹の反応の違い。\n\n同じように見えても\n触れると全然違う。",
+        "cta": ""
+      },
+      {
+        "hook": "“お客様に説明しやすくなった”",
+        "body": "これは大きな変化。\n\n技術の価値は\n伝えられてこそ届く。",
+        "cta": ""
+      },
+      {
+        "hook": "腹部を学ぶと",
+        "body": "今までの施術にも\n深さが出る人が多い。\n\n新しい視点が増えるから。",
+        "cta": ""
+      },
+      {
+        "hook": "“お腹って奥深いですね”",
+        "body": "講座中によく出る言葉。\n\nほんとに、奥深い。",
+        "cta": ""
+      },
+      {
+        "hook": "学んだ後に",
+        "body": "自分のお腹の見方も変わる。\n\n施術者自身の気づきにもなる。",
+        "cta": ""
+      },
+      {
+        "hook": "手技が増えるだけじゃなく",
+        "body": "手の質が変わる。\n\n腹部を学ぶと\nそこが育つ。",
+        "cta": ""
+      },
+      {
+        "hook": "“もっと早く知りたかった”",
+        "body": "そう言われることがある内容です。\n\n腹部は現場で使える。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹を見る視点が入ると",
+        "body": "お客様の見え方が変わる。\n\n施術が立体的になる。",
+        "cta": ""
+      }
+    ],
+    "question": [
+      {
+        "hook": "今の施術に",
+        "body": "腹部を見る視点はありますか？\n\nここが入ると\n施術の組み立てが変わります。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹を触る時",
+        "body": "何を見ていますか？\n\n硬さ？\n冷え？\n呼吸？\n\n見立てがあると手が変わる。",
+        "cta": ""
+      },
+      {
+        "hook": "お客様に",
+        "body": "なぜお腹を触るのか\n説明できますか？\n\n説明できることは\n信頼につながる。",
+        "cta": ""
+      },
+      {
+        "hook": "手技だけ増やしても",
+        "body": "変わらない時は\n見立てが足りないのかもしれない。",
+        "cta": ""
+      },
+      {
+        "hook": "腹部施術を",
+        "body": "サロンの強みにしたいですか？\n\nまずは安全に触れる基礎から。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹を見る力は",
+        "body": "今の施術に足りていますか？",
+        "cta": ""
+      },
+      {
+        "hook": "お客様の変化を",
+        "body": "もっと感じ取れる手になりたいですか？\n\n腹部は反応が出やすい場所です。",
+        "cta": ""
+      },
+      {
+        "hook": "なんとなく触るから",
+        "body": "卒業しませんか？\n\n腹部は\n理由を持って触りたい場所。",
+        "cta": ""
+      },
+      {
+        "hook": "今のメニューに",
+        "body": "もう一つ深さを加えるなら\n腹部施術は強い。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹を見られるセラピストって",
+        "body": "お客様にとって\n安心材料になると思う。",
+        "cta": ""
+      }
+    ]
+  },
+  "daily": {
+    "warm": [
+      {
+        "hook": "今日も",
+        "body": "お腹に触れて\nからだは正直だなと思った。",
+        "cta": ""
+      },
+      {
+        "hook": "施術前に",
+        "body": "自分のお腹に手を当てる。\n\n自分が整ってないと\n手に出るから。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹は",
+        "body": "急いだら固まる。\n\n待てる手でいたい。",
+        "cta": ""
+      },
+      {
+        "hook": "今日の施術でも",
+        "body": "呼吸がふっと変わる瞬間があった。\n\nあの瞬間が好き。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹に触れる仕事は",
+        "body": "毎回、学びがある。\n\n同じ反応は一つもない。",
+        "cta": ""
+      },
+      {
+        "hook": "“お腹って大事ですね”",
+        "body": "今日も言われた。\n\n受けると分かる場所。",
+        "cta": ""
+      },
+      {
+        "hook": "静かに手を置くだけで",
+        "body": "変わることがある。\n\nただし\nただ置けばいいわけじゃない。",
+        "cta": ""
+      },
+      {
+        "hook": "セラピストこそ",
+        "body": "自分のお腹を見てほしい。\n\n疲れは手に出るから。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹の冷えが",
+        "body": "気になる方が続いた日。\n\n手足より先に\nお腹を見ることもある。",
+        "cta": ""
+      },
+      {
+        "hook": "今日も思った。",
+        "body": "腹部施術は派手じゃない。\n\nでも、深い。",
+        "cta": ""
+      }
+    ],
+    "pro": [
+      {
+        "hook": "腹部って",
+        "body": "筋肉だけじゃなくて\n呼吸・内臓・自律神経が重なる場所。\n\nだから触れ方で\n反応がかなり変わる。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹の張りは",
+        "body": "ただ硬い、だけじゃない。\n\n冷えてる張り。\n緊張してる張り。\n重たい張り。\n\n触れると違う。",
+        "cta": ""
+      },
+      {
+        "hook": "呼吸を見るなら",
+        "body": "胸だけじゃなくて\nお腹の動きも見る。\n\nここが止まってる人は多い。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹の質感は",
+        "body": "施術のヒントになる。\n\nふわっとしてる。\n奥が硬い。\n冷たい。\n動かない。\n\n全部、見立ての材料。",
+        "cta": ""
+      },
+      {
+        "hook": "腹部施術は",
+        "body": "強く押すほど良いものじゃない。\n\n受け取れる圧で触れることが\nかなり大事。",
+        "cta": ""
+      },
+      {
+        "hook": "内臓の基礎を知ると",
+        "body": "お腹の見え方が変わる。\n\nただの張りじゃなく\nからだの反応として見えてくる。",
+        "cta": ""
+      },
+      {
+        "hook": "自律神経の反応は",
+        "body": "お腹にも出る。\n\n力が抜けない。\n呼吸が浅い。\n張りやすい。\n\n見逃しやすい場所。",
+        "cta": ""
+      },
+      {
+        "hook": "五臓の視点は",
+        "body": "難しい理論を話すためじゃなくて\nお腹の反応を立体的に見るために使う。",
+        "cta": ""
+      },
+      {
+        "hook": "腹部を見る力は",
+        "body": "施術の判断力になる。\n\nどこを触るかより\n今、何を見ているか。",
+        "cta": ""
+      },
+      {
+        "hook": "腹部施術は",
+        "body": "知識だけでも\n感覚だけでも足りない。\n\n両方がいる。",
+        "cta": ""
+      }
+    ],
+    "story": [
+      {
+        "hook": "受講後に",
+        "body": "“お腹を見るのが怖くなくなった”\nと言われることがあります。\n\n基礎があると手が変わる。",
+        "cta": ""
+      },
+      {
+        "hook": "“なんとなく触ってた”",
+        "body": "そこから卒業するための\n腹部コースです。\n\n見立てがあると迷いが減る。",
+        "cta": ""
+      },
+      {
+        "hook": "受講生さんが驚くのは",
+        "body": "お腹の反応の違い。\n\n同じように見えても\n触れると全然違う。",
+        "cta": ""
+      },
+      {
+        "hook": "“お客様に説明しやすくなった”",
+        "body": "これは大きな変化。\n\n技術の価値は\n伝えられてこそ届く。",
+        "cta": ""
+      },
+      {
+        "hook": "腹部を学ぶと",
+        "body": "今までの施術にも\n深さが出る人が多い。\n\n新しい視点が増えるから。",
+        "cta": ""
+      },
+      {
+        "hook": "“お腹って奥深いですね”",
+        "body": "講座中によく出る言葉。\n\nほんとに、奥深い。",
+        "cta": ""
+      },
+      {
+        "hook": "学んだ後に",
+        "body": "自分のお腹の見方も変わる。\n\n施術者自身の気づきにもなる。",
+        "cta": ""
+      },
+      {
+        "hook": "手技が増えるだけじゃなく",
+        "body": "手の質が変わる。\n\n腹部を学ぶと\nそこが育つ。",
+        "cta": ""
+      },
+      {
+        "hook": "“もっと早く知りたかった”",
+        "body": "そう言われることがある内容です。\n\n腹部は現場で使える。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹を見る視点が入ると",
+        "body": "お客様の見え方が変わる。\n\n施術が立体的になる。",
+        "cta": ""
+      }
+    ],
+    "question": [
+      {
+        "hook": "今の施術に",
+        "body": "腹部を見る視点はありますか？\n\nここが入ると\n施術の組み立てが変わります。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹を触る時",
+        "body": "何を見ていますか？\n\n硬さ？\n冷え？\n呼吸？\n\n見立てがあると手が変わる。",
+        "cta": ""
+      },
+      {
+        "hook": "お客様に",
+        "body": "なぜお腹を触るのか\n説明できますか？\n\n説明できることは\n信頼につながる。",
+        "cta": ""
+      },
+      {
+        "hook": "手技だけ増やしても",
+        "body": "変わらない時は\n見立てが足りないのかもしれない。",
+        "cta": ""
+      },
+      {
+        "hook": "腹部施術を",
+        "body": "サロンの強みにしたいですか？\n\nまずは安全に触れる基礎から。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹を見る力は",
+        "body": "今の施術に足りていますか？",
+        "cta": ""
+      },
+      {
+        "hook": "お客様の変化を",
+        "body": "もっと感じ取れる手になりたいですか？\n\n腹部は反応が出やすい場所です。",
+        "cta": ""
+      },
+      {
+        "hook": "なんとなく触るから",
+        "body": "卒業しませんか？\n\n腹部は\n理由を持って触りたい場所。",
+        "cta": ""
+      },
+      {
+        "hook": "今のメニューに",
+        "body": "もう一つ深さを加えるなら\n腹部施術は強い。",
+        "cta": ""
+      },
+      {
+        "hook": "お腹を見られるセラピストって",
+        "body": "お客様にとって\n安心材料になると思う。",
+        "cta": ""
+      }
+    ]
+  }
+};
+
 let platform='instagram',purpose='attract',tone='warm',currentTpl=null;
 const editMode={Hook:false,Body:false,Cta:false};
+let editCaptionMode=false;
 
 document.getElementById('platformRow').addEventListener('click',e=>{
   const t=e.target.closest('[data-v]');if(!t)return;
@@ -1266,6 +2123,7 @@ function getVal(Key){
   return document.getElementById('out'+Key).textContent;
 }
 function syncCaption(){
+  if(editCaptionMode)return;
   const foot=platform==='instagram'?FIG:FTH;
   document.getElementById('outCaption').textContent=getVal('Hook')+'\n\n'+getVal('Body')+'\n\n'+getVal('Cta')+'\n\n'+foot;
 }
@@ -1278,14 +2136,37 @@ function toggleEdit(Key){
   else{view.textContent=edit.value;view.style.display='block';edit.style.display='none';btn.textContent='編集';syncCaption();}
 }
 
+function toggleCaptionEdit(){
+  const view=document.getElementById('outCaption');
+  const edit=document.getElementById('editCaption');
+  const btn=edit.parentElement.querySelector('.edit-toggle');
+  editCaptionMode=!editCaptionMode;
+  if(editCaptionMode){
+    edit.value=view.textContent;
+    view.style.display='none';
+    edit.style.display='block';
+    btn.textContent='確定';
+  }else{
+    view.textContent=edit.value;
+    view.style.display='block';
+    edit.style.display='none';
+    btn.textContent='編集';
+  }
+}
+
 function generate(){
   const theme=document.getElementById('themeInput').value.trim();
-  let pool=T[purpose]?.[tone]||T[purpose]?.warm||[];
-  if(!pool||pool.length===0){const k=Object.keys(T[purpose]||{})[0];pool=k?T[purpose][k]:[];}
+  const SOURCE=platform==='threads'?THREADS_T:T;
+  let pool=SOURCE[purpose]?.[tone]||SOURCE[purpose]?.warm||[];
+  if(!pool||pool.length===0){const k=Object.keys(SOURCE[purpose]||{})[0];pool=k?SOURCE[purpose][k]:[];}
   let tpl;
   if(!pool||pool.length===0){tpl={hook:'腹部施術を通じて\nお客様のからだに向き合う毎日です。',body:'丁寧に、ていねいに。\nそれだけを心がけています。\n\nお腹に手を当てるとき\nからだが教えてくれることがあります。',cta:'ご相談はお気軽にDMください。'};}
   else{const idx=Math.floor(Math.random()*pool.length);tpl=JSON.parse(JSON.stringify(pool[idx]));if(theme)tpl.body=theme+'\n\n'+tpl.body;}
   currentTpl=tpl;
+  editCaptionMode=false;
+  document.getElementById('outCaption').style.display='block';
+  document.getElementById('editCaption').style.display='none';
+  document.getElementById('editCaption').parentElement.querySelector('.edit-toggle').textContent='編集';
   ['Hook','Body','Cta'].forEach(Key=>{editMode[Key]=false;document.getElementById('out'+Key).style.display='block';document.getElementById('edit'+Key).style.display='none';document.getElementById('edit'+Key).parentElement.querySelector('.edit-toggle').textContent='編集';});
   document.getElementById('outHook').textContent=tpl.hook;
   document.getElementById('outBody').textContent=tpl.body;
@@ -1301,7 +2182,8 @@ function generate(){
 }
 
 function copyCaption(){
-  navigator.clipboard.writeText(document.getElementById('outCaption').textContent).then(()=>{
+  const text=editCaptionMode?document.getElementById('editCaption').value:document.getElementById('outCaption').textContent;
+  navigator.clipboard.writeText(text).then(()=>{
     const b=document.getElementById('copyBtn');b.textContent='コピーしました';b.classList.add('copy-ok');
     setTimeout(()=>{b.textContent='コピーする';b.classList.remove('copy-ok');},2500);
   });
@@ -1312,7 +2194,7 @@ function getSavedKey(){return 'mitohana_saved_'+(currentEmail||'u');}
 async function savePost(){
   if(!currentTpl)return;
   const btn=document.getElementById('saveBtn');btn.disabled=true;btn.textContent='保存中…';
-  const caption=document.getElementById('outCaption').textContent;
+  const caption=editCaptionMode?document.getElementById('editCaption').value:document.getElementById('outCaption').textContent;
   const hook=document.getElementById('outHook').textContent;
   const body=document.getElementById('outBody').textContent;
   const cta=document.getElementById('outCta').textContent;
