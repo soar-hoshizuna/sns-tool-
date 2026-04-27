@@ -94,16 +94,8 @@ select:focus,textarea:focus,input:focus{outline:none;border-color:var(--purple-m
     <div id="step1">
       <label class="form-label">登録メールアドレス</label>
       <input type="email" id="emailInput" placeholder="example@email.com">
-      <button class="login-btn" onclick="sendOtp()">認証コードを送信</button>
-      <p class="step-note">登録済みのメールアドレスにのみ<br>認証コードが届きます</p>
-    </div>
-    <div id="step2" style="display:none;">
-      <label class="form-label">認証コード（6桁）</label>
-      <input type="text" id="otpInput" placeholder="000000" maxlength="6" inputmode="numeric">
-      <button class="login-btn" onclick="verifyOtp()">ログイン</button>
-      <p class="step-note">メールに届いた6桁のコードを入力してください<br><br>
-        <span style="cursor:pointer;text-decoration:underline;color:var(--purple);" onclick="resetLogin()">メールアドレスを変更する</span>
-      </p>
+      <button class="login-btn" onclick="doLogin()">ログイン</button>
+      <p class="step-note">登録済みのメールアドレスのみ<br>ログインできます</p>
     </div>
   </div>
 </div>
@@ -201,27 +193,24 @@ const GAS_URL='https://script.google.com/macros/s/AKfycbwOK5F9nXh_pRT37q2zmnEtOK
 let currentEmail='',currentToken='';
 
 function showMsg(m,t){document.getElementById('loginMsg').innerHTML=m?`<div class="msg-box msg-${t}">${m}</div>`:'';}
-async function sendOtp(){
-  const email=document.getElementById('emailInput').value.trim();
+async function doLogin(){
+  const email=document.getElementById('emailInput').value.trim().toLowerCase();
   if(!email){showMsg('メールアドレスを入力してください','err');return;}
-  const btn=document.querySelector('#step1 .login-btn');btn.disabled=true;btn.textContent='送信中…';showMsg('','');
-  try{const r=await fetch(GAS_URL,{method:'POST',body:JSON.stringify({action:'sendOtp',email})});const d=await r.json();
-    if(d.ok){currentEmail=email;document.getElementById('step1').style.display='none';document.getElementById('step2').style.display='block';showMsg('認証コードを送信しました','ok');}
-    else showMsg(d.msg||'登録されていないメールアドレスです','err');
-  }catch(e){showMsg('通信エラーが発生しました','err');}
-  btn.disabled=false;btn.textContent='認証コードを送信';
-}
-async function verifyOtp(){
-  const otp=document.getElementById('otpInput').value.trim();
-  if(otp.length!==6){showMsg('6桁のコードを入力してください','err');return;}
-  const btn=document.querySelector('#step2 .login-btn');btn.disabled=true;btn.textContent='確認中…';showMsg('','');
-  try{const r=await fetch(GAS_URL,{method:'POST',body:JSON.stringify({action:'verifyOtp',email:currentEmail,otp})});const d=await r.json();
-    if(d.ok){currentToken=d.token;sessionStorage.setItem('sns_token',d.token);sessionStorage.setItem('sns_email',currentEmail);startApp();}
-    else showMsg('コードが正しくありません。もう一度お試しください','err');
+  const btn=document.querySelector('#step1 .login-btn');btn.disabled=true;btn.textContent='確認中…';showMsg('','');
+  try{
+    const r=await fetch(GAS_URL,{method:'POST',body:JSON.stringify({action:'checkEmail',email})});
+    const d=await r.json();
+    if(d.ok){
+      currentEmail=email;
+      sessionStorage.setItem('sns_email',email);
+      sessionStorage.setItem('sns_token','valid');
+      startApp();
+    } else {
+      showMsg(d.msg||'登録されていないメールアドレスです','err');
+    }
   }catch(e){showMsg('通信エラーが発生しました','err');}
   btn.disabled=false;btn.textContent='ログイン';
 }
-function resetLogin(){document.getElementById('step1').style.display='block';document.getElementById('step2').style.display='none';document.getElementById('otpInput').value='';showMsg('','');}
 function logout(){sessionStorage.clear();location.reload();}
 function startApp(){
   document.getElementById('loginWrap').style.display='none';
